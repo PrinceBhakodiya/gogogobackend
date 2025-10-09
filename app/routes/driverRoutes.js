@@ -22,8 +22,8 @@ const driverRouter = express.Router();
 
 // ==================== AUTHENTICATION ROUTES ====================
 // OTP Routes (with rate limiting to prevent spam)
-driverRouter.post("/auth/send-otp", authRateLimit(5, 15 * 60 * 1000), sendOTP);
-driverRouter.post("/auth/verify-otp", authRateLimit(5, 15 * 60 * 1000), verifyOtp);
+driverRouter.post("/auth/send-otp",  sendOTP);
+driverRouter.post("/auth/verify-otp",  verifyOtp);
 
 // ==================== ONBOARDING ROUTES (Protected) ====================
 // All onboarding routes require authentication
