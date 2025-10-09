@@ -5,14 +5,14 @@ const Ride = require('../models/Ride');
 
 class DriverController {
   // ==================== AUTHENTICATION METHODS ====================
-
-  async sendOTP(req, res) {
+ async sendOTP(req, res) {
     try {
       const { phone } = req.body;
       if (!phone) {
         return res.status(400).json({ success: false, message: 'Phone number is required' });
       }
 
+      // Basic validation
       const phoneRegex = /^\+?[1-9]\d{1,14}$/;
       if (!phoneRegex.test(phone)) {
         return res.status(400).json({ success: false, message: 'Invalid phone number format' });
@@ -29,20 +29,24 @@ class DriverController {
         await driver.save();
       }
 
-      const result = await sendOTP(cleanPhone);
-      if (!result.success) throw new Error('Failed to send OTP');
+      // Dummy OTP setup
+      const dummyOTP = '1234';
+
+      // Optionally, you can store OTP temporarily in DB if needed
+      driver.tempOTP = dummyOTP;
+      driver.otpExpiresAt = Date.now() + 5 * 60 * 1000; // 5 mins
+      await driver.save();
 
       res.json({
         success: true,
-        message: 'OTP sent successfully',
-        data: { phone: cleanPhone, expiresIn: '5 minutes' },
+        message: 'OTP (1234) sent successfully [Dummy mode]',
+        data: { phone: cleanPhone, otp: dummyOTP, expiresIn: '5 minutes' },
       });
     } catch (error) {
       console.error('Send OTP error:', error);
-      res.status(500).json({ success: false, message: error.message || 'Failed to send OTP' });
+      res.status(500).json({ success: false, message: 'Failed to send OTP' });
     }
   }
-
   async verifyOtp(req, res) {
     try {
       const { phone, otp } = req.body;
@@ -51,18 +55,15 @@ class DriverController {
       }
 
       const cleanPhone = phone.replace(/\D/g, '');
-      const isValidOTP = await verifyOTP(cleanPhone, otp);
-
-      if (!isValidOTP) {
-        return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
-      }
-console.log(cleanPhone);
-      let driver = await Driver.findOne({ phone: cleanPhone });
-      let isNew = false;
+      const driver = await Driver.findOne({ phone: cleanPhone });
 
       if (!driver) {
-        driver = new Driver({ phone: cleanPhone });
-        isNew = true;
+        return res.status(400).json({ success: false, message: 'Driver not found' });
+      }
+
+      // Check dummy OTP
+      if (otp !== '1234') {
+        return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
       }
 
       driver.onboardingSteps.otp = true;
@@ -82,7 +83,6 @@ console.log(cleanPhone);
             id: driver._id,
             phone: driver.phone,
             onboardingSteps: driver.onboardingSteps,
-            isNew,
           },
           token,
         },
@@ -92,7 +92,6 @@ console.log(cleanPhone);
       res.status(500).json({ success: false, message: 'Failed to verify OTP' });
     }
   }
-
   // ==================== ONBOARDING METHODS ====================
 
   async savePersonal(req, res) {
