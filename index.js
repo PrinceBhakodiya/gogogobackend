@@ -57,7 +57,7 @@ const rideRoutes = require('./app/routes/rideRoutes');
 // Routes
 app.get('/', (req, res) => {
   res.json({
-    message: 'Ride Hailing Platform 12',
+    message: 'Ride Hailing Platform 111',
     version: '1.0.0',
     status: 'running',
     services: {
