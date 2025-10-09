@@ -61,10 +61,10 @@ class DriverController {
         return res.status(400).json({ success: false, message: 'Driver not found' });
       }
 
-      // Check dummy OTP
-      if (otp !== '1234') {
-        return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
-      }
+      // // Check dummy OTP
+      // if (otp !== '1234') {
+      //   return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+      // }
 
       driver.onboardingSteps.otp = true;
       await driver.save();
