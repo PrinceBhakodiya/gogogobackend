@@ -11,7 +11,11 @@ const {getProfile,
   saveBackground,
   getStatus,
   toggleAvailability,
-  updateLocation
+  updateLocation,
+  getEarnings,getTripDetails,
+  getTripHistory,
+  getDailyEarningsDetail,
+  getCurrentRide
 } = require("../controllers/driverController.js");
 
 const driverRouter = express.Router();
@@ -37,8 +41,23 @@ driverRouter.get("/profile", driverAuth, getProfile);
 // driverRouter.put("/profile/update", driverAuth, updateProfi);
 
 // driverRouter.put("/profile/update", authMiddleware, updateProfile);
+// ==================== DRIVER PROFILE ROUTES ====================
+driverRouter.get("/profile", driverAuth, getProfile);
+// driverRouter.post("/toggle-availability", driverAuth, toggleAvailability);
+
 driverRouter.post("/location/update", driverAuth, updateLocation);
-driverRouter.post("/status/toggle", driverAuth, toggleAvailability);
+driverRouter.post("/toggle-availability", driverAuth, toggleAvailability);
+
+// ==================== EARNINGS & HISTORY ROUTES ====================
+// Earnings routes
+driverRouter.get("/earnings", driverAuth, getEarnings);
+driverRouter.get("/earnings/daily", driverAuth, getDailyEarningsDetail);
+
+// Trip history routes
+driverRouter.get("/getCurrentRide", driverAuth, getCurrentRide);
+
+driverRouter.get("/history", driverAuth, getTripHistory);
+driverRouter.get("/history/:tripId", driverAuth, getTripDetails);
 
 // // ==================== DRIVER LOCATION & STATUS ROUTES ====================
 // // These will be used for real-time driver tracking

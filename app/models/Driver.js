@@ -23,6 +23,7 @@ const backgroundSchema = new mongoose.Schema(
 const driverSchema = new mongoose.Schema(
   {
     phone: { type: String, required: true, unique: true },
+    planType: { type: String,default:'standard' },
 
     // ✅ Onboarding flow steps
     onboardingSteps: {
@@ -76,9 +77,9 @@ const driverSchema = new mongoose.Schema(
       enum: ["pending", "in_progress", "pending_approval", "verified", "rejected"],
       default: "pending",
     },
-
+totalAcceptances: { type: Number, default: 0 },
     isAvailable: { type: Boolean, default: false },
-
+currentRide: { type: mongoose.Schema.Types.ObjectId, ref: "Ride" },
     currentLocation: {
       type: { type: String, default: "Point" },
       coordinates: [Number],

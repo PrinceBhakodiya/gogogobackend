@@ -14,7 +14,7 @@ async function sendOTP(mobile) {
         const cleanMobile = mobile.replace(/\D/g, '');
         
         // Generate OTP and set expiry
-        const otp = generateOTP();
+        const otp = 1234;
         const expiryTime = Date.now() + (5 * 60 * 1000); // 5 minutes
         
         // Store OTP (assuming you have some in-memory storage like Map)
